@@ -1,0 +1,32 @@
+{
+  "updates": [
+    {
+      "user_id": "1",
+      "username": "srinivas",
+      "name": "Srinivas Tamada",
+      "profile_pic": "https://wallscript8labs.s3.amazonaws.com/user1_14572474701.png",
+      "update_id": "62",
+      "user_update": "Hello Hello",
+      "created": "1464062121"
+    },
+    {
+      "user_id": "1",
+      "username": "srinivas",
+      "name": "Srinivas Tamada",
+      "profile_pic": "https://wallscript8labs.s3.amazonaws.com/user1_14572474701.png",
+      "update_id": "60",
+      "user_update": "Hello TEST",
+      "created": "1464059798"
+    },
+    {
+      "user_id": "3",
+      "username": "arun",
+      "name": "Arun Kumar",
+      "profile_pic": "https://wallscript8labs.s3.amazonaws.com/user10_14547044391.jpg",
+      "update_id": "50",
+      "user_update": "9lessons Programming Blog http://www.9lessons.info",
+      "created": "1417551613"
+    }
+ 
+  ]
+}

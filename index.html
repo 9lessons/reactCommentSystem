@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React Lessions</title>
+	<script src="build/react.js"></script>
+	<script src="build/react-dom.js"></script>
+	<script src="build/browser.min.js"></script>
+
+	<script src="build/jquery.min.js"></script>
+	<script src="build/remarkable.min.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<div id="container"></div>
+
+
+<script type="text/babel">
+var CommentList = React.createClass({
+  render: function() {
+  
+    var commentNodes = this.props.data.map(function(comment){
+      
+      return(
+       <Comment author={comment.username}  key={comment.created}>
+          {comment.user_update}
+        </Comment>
+      
+      );
+      
+    
+    });
+    return ( < div className = "commentList" >
+    {commentNodes}
+      < /div>
+    );
+  }
+});
+
+var CommentForm = React.createClass({
+  getInitialState: function(){
+    return {username: '', user_update: ''};
+  },
+  handleAuthorChange: function(e){
+   this.setState({ username: e.target.value });
+  },
+  handleTextChange:function(e){
+   this.setState({user_update: e.target.value });
+  },
+  handleSubmit: function(e){
+   e.preventDefault();
+   var username= this.state.username.trim();
+   var user_update= this.state.user_update.trim();
+   
+   if(!username || !user_update)
+   {
+     return;
+   }
+   this.props.onCommentSubmit({ username:username, user_update: user_update});
+   this.setState({ username: '', user_update:''});
+  },
+  render: function() {
+    return ( 
+    
+     <form className="commentForm"  onSubmit={this.handleSubmit}>
+        <input type="text" placeholder="Your name" value={this.state.username} onChange={this.handleAuthorChange}/>
+        <input type="text" placeholder="Say something..." value={this.state.user_update} onChange={this.handleTextChange}/>
+        <input type="submit" value="Post" />
+      </form>
+
+     
+    );
+  }
+});
+
+
+
+var CommentBox = React.createClass({
+  loadCommentsFromServer: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({data: data.updates});
+      }.bind(this),
+      error: function(xhr, status, err) {
+       // console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  handleCommentSubmit: function(comment)
+  {
+
+
+
+
+
+  $.ajax({
+      url: this.props.posturl,
+      dataType: 'json',
+      type: 'POST',
+      data: comment,
+      success: function(data) {
+
+      var comments = this.state.data; //Old Data Set
+      var newComments = comments.concat([data.updates[0]]);
+      this.setState({data: newComments});
+
+      }.bind(this),
+      error: function(xhr, status, err) {
+      this.setState({data: comments});
+        //console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentDidMount: function() {
+    this.loadCommentsFromServer();
+    //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+  },
+  render: function() {
+    return (
+      <div className="commentBox">
+        <h1>Comments</h1>
+        <CommentForm onCommentSubmit={this.handleCommentSubmit}/>
+        <CommentList data={this.state.data} />
+        
+      </div>
+    );
+  }
+});
+
+var Comment = React.createClass({
+  rawMarkup: function() {
+    var md = new Remarkable('full',{
+    html:         true,        // Enable HTML tags in source
+  linkify:      true,         // autoconvert URL-like texts to links
+  linkTarget:   '',
+  
+    });
+    var rawMarkup = md.render(this.props.children);
+    return { __html: rawMarkup };
+  },
+
+  render: function() {
+    return (
+      <div className="comment">
+        <b className="commentAuthor">
+          {this.props.author}
+        </b>
+        <span dangerouslySetInnerHTML={this.rawMarkup()} />
+      </div>
+    );
+  }
+});
+
+
+
+ReactDOM.render( <CommentBox  posturl="post.php" url="test.json" pollInterval={1000} /> ,
+  document.getElementById('container')
+);
+</script>
+
+
+
+
+<!--
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCZhhPzrpsuT2WPAx03ZFvS6bWC-OeaysA",
+    authDomain: "lessons-a4f8b.firebaseapp.com",
+    databaseURL: "https://lessons-a4f8b.firebaseio.com",
+    storageBucket: "",
+  };
+  firebase.initializeApp(config);
+</script>
+-->
+
+	
+</body>
+</html>
